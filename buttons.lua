@@ -52,7 +52,7 @@ function f.load()
 			pressed[name] = false
 		end
 	end
-	local windowWidth, windowHeight = 400, 200
+	local windowWidth, windowHeight = tonumber(loadQueue.windowWidth) or 400, tonumber(loadQueue.windowHeight) or 200
 	love.window.setMode(windowWidth, windowHeight,  {resizable = true, vsync = 1})
 end
 
