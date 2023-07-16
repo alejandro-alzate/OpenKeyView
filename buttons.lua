@@ -3,63 +3,13 @@ local multiplier = 64
 local mousearrowpos = {x = 13 * multiplier, y = 3 * multiplier}
 local mx, my, mdx, mdy, arrowstick_active, arrowstick_idle
 mdx, mdy = 0, 0
-local loadQueue = {
-	{name = '1', pos = {x = 1, y = 0}, alias = '1'},
-	{name = '2', pos = {x = 2, y = 0}, alias = '2'},
-	{name = '3', pos = {x = 3, y = 0}, alias = '3'},
-	{name = '4', pos = {x = 4, y = 0}, alias = '4'},
-	{name = '5', pos = {x = 5, y = 0}, alias = '5'},
-	{name = '6', pos = {x = 6, y = 0}, alias = '6'},
-	{name = '7', pos = {x = 7, y = 0}, alias = '7'},
-	{name = '8', pos = {x = 8, y = 0}, alias = '8'},
-	{name = '9', pos = {x = 9, y = 0}, alias = '9'},
-	{name = '0', pos = {x = 10, y = 0}, alias = '0'},
-	{name = 'q', pos = {x = 1.5, y = 1}},
-	{name = 'w', pos = {x = 2.5, y = 1}},
-	{name = 'e', pos = {x = 3.5, y = 1}},
-	{name = 'r', pos = {x = 4.5, y = 1}},
-	{name = 't', pos = {x = 5.5, y = 1}},
-	{name = 'y', pos = {x = 6.5, y = 1}},
-	{name = 'u', pos = {x = 7.5, y = 1}},
-	{name = 'i', pos = {x = 8.5, y = 1}},
-	{name = 'o', pos = {x = 9.5, y = 1}},
-	{name = 'p', pos = {x = 10.5, y = 1}},
-	{name = 'a', pos = {x = 2, y = 2}},
-	{name = 's', pos = {x = 3, y = 2}},
-	{name = 'd', pos = {x = 4, y = 2}},
-	{name = 'f', pos = {x = 5, y = 2}},
-	{name = 'g', pos = {x = 6, y = 2}},
-	{name = 'h', pos = {x = 7, y = 2}},
-	{name = 'j', pos = {x = 8, y = 2}},
-	{name = 'k', pos = {x = 9, y = 2}},
-	{name = 'l', pos = {x = 10, y = 2}},
-	{name = 'z', pos = {x = 2.5, y = 3}},
-	{name = 'x', pos = {x = 3.5, y = 3}},
-	{name = 'c', pos = {x = 4.5, y = 3}},
-	{name = 'v', pos = {x = 5.5, y = 3}},
-	{name = 'b', pos = {x = 6.5, y = 3}},
-	{name = 'n', pos = {x = 7.5, y = 3}},
-	{name = 'm', pos = {x = 8.5, y = 3}},
-	{name = 'space', pos = {x = 3, y = 4}},
-	{name = 'tab', pos = {x = 0, y = 1}},
-	{name = 'lshift', pos = {x = 0, y = 3}},
-	{name = 'lcontrol', pos = {x = 0, y = 4}},
-	{name = 'lgui', pos = {x = 1, y = 4}},
-	{name = 'lalt', pos = {x = 2, y = 4}},
-	{name = 'capslock', pos = {x = 0, y = 2}},
-	{name = 'space', pos = {x = 3, y = 4}},
-	{name = 'lclick', pos = {x = 12, y = 0}},
-	{name = 'mclick', pos = {x = 13, y = 0}},
-	{name = 'wheelup', pos = {x = 13, y = 1}},
-	{name = 'wheeldown', pos = {x = 13, y = 1.5}},
-	{name = 'rclick', pos = {x = 14, y = 0}},
-}
+local loadQueue = require(LAYOUT)
 local pressed = {}
 drawCalls = {}
 
 function f.load()
-	arrowstick_active = love.graphics.newImage('mouse_active.png')
-	arrowstick_idle = love.graphics.newImage('mouse_idle.png')
+	arrowstick_active = love.graphics.newImage('/assets/keyboard/mouse_active.png')
+	arrowstick_idle = love.graphics.newImage('/assets/keyboard/mouse_idle.png')
 	for i,v in ipairs(loadQueue) do
 		local x, y, drawable, name, up, down, alias, func, info
 		if type(loadQueue[i]) == 'table' then
@@ -75,20 +25,22 @@ function f.load()
 				alias = tostring(loadQueue[i].alias)
 			end
 			target = alias
-			info = love.filesystem.getInfo(tostring(alias)..'_up.png')
-			info = love.filesystem.getInfo(tostring(alias)..'_down.png')
+			info = love.filesystem.getInfo(loadQueue.path..tostring(alias)..'_up.png')
 			if not info then
-				target = 'err'
+				up = love.graphics.newImage('/assets/common/err_up.png')
+			else
+				up = love.graphics.newImage(loadQueue.path..tostring(target)..'_up.png')
 			end
+			info = love.filesystem.getInfo(loadQueue.path..tostring(alias)..'_down.png')
 			if not info then
-				target = 'err'
+				down = love.graphics.newImage('/assets/common/err_down.png')
+			else
+				down = love.graphics.newImage(loadQueue.path..tostring(target)..'_down.png')
 			end
-			up = love.graphics.newImage(tostring(target)..'_up.png')
-			down = love.graphics.newImage(tostring(target)..'_down.png')
 			drawable = up
 			func = function()
 				if type(pressed) == 'table' then
-					if pressed[alias] == true then
+					if pressed[name] == true then
 						drawable = down
 					else
 						drawable = up
@@ -97,9 +49,11 @@ function f.load()
 				end
 			end
 			table.insert(drawCalls, func)
-			pressed[alias] = false
+			pressed[name] = false
 		end
 	end
+	local windowWidth, windowHeight = 400, 200
+	love.window.setMode(windowWidth, windowHeight,  {resizable = true, vsync = 1})
 end
 
 function f.draw()
@@ -108,6 +62,7 @@ function f.draw()
 			pcall(v)
 		end
 	end
+
 	local drawable = arrowstick_idle
 	if mdx == 0 and mdy == 0 then
 	else
@@ -130,7 +85,10 @@ function f.draw()
 	end
 
 	local x, y = (mousearrowpos.x + capx), (mousearrowpos.y + capy)
-	love.graphics.draw(drawable, x, y)
+	if loadQueue.hideMouseJoystick then
+	else
+		love.graphics.draw(drawable, x, y)
+	end
 	pressed['wheelup'] = false
 	pressed['wheeldown'] = false
 	mdx, mdy = 0, 0

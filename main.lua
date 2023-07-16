@@ -1,7 +1,11 @@
+--Select the .lua file containing the layout
+LAYOUT = "/assets/not-in-the-groove/_layout"
+
 websocket = ""
 client = ""
 open = false
-left_ptr = love.graphics.newImage('left_ptr.png')
+left_ptr = love.graphics.newImage('/assets/common/left_ptr.png')
+love.graphics.setDefaultFilter("nearest", "nearest")
 local ww, wh = love.graphics.getDimensions()
 local sw, sh = love.window.getDesktopDimensions()
 local mx, my = 0, 0
@@ -26,11 +30,11 @@ function makeClient(host, port)
 end
 
 function love.load(args, unfilteredArgs)
+	love.window.setTitle('KeyStrokeViewer By Alejandro Alzate (github.com/alejandro-alzate)')
+	love.window.setMode(15*64, 5*64, {resizable = true, vsync = 1})
 	websocket = require("websocket")
 	client = makeClient("127.0.0.1", 7788)
 	buttons.load()
-	love.window.setMode(15*64, 5*64, {resizable = true, vsync = 1})
-	love.window.setTitle('KeyStrokeViewer By Alejandro Alzate (github.com/alejandro-alzate)')
 end
 
 function love.keypressed(key, scancode, isrepeat)
