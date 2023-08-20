@@ -1,3 +1,4 @@
 start /min KeystrokeServer.exe
 timeout /t 3
-love .\
+"C:\Program Files\LOVE\love.exe" .\
+exit /b

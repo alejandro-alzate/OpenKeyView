@@ -120,7 +120,7 @@ function netkey.msghandler(msg)
 			end
 		end
 		if msg:len() == 16 then --[[Mouse moved]]
-			--DisplayKeystroke Server 
+			--DisplayKeystroke Server
 			local x =   tonumber(string.sub(msg, 1,4), 16)
 			local y =   tonumber(string.sub(msg, 5,8), 16)
 			local dx = (tonumber(string.sub(msg, 9,12 ), 16)+2^15)%2^16-2^15
