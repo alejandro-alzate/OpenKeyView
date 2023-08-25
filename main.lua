@@ -1,5 +1,5 @@
 --Select the .lua file containing the layout
-LAYOUT = "/assets/not-in-the-groove/_layout"
+LAYOUT = "/assets/keyboard/_layout"
 
 websocket = ""
 client = ""

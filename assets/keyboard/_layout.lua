@@ -1,5 +1,7 @@
 local LAYOUT = {
 		path = "/assets/keyboard/",
+		windowWidth = 15*64,
+		windowHeight = 5*64,
 		{name = '1', pos = {x = 1, y = 0}, alias = '1'},
 		{name = '2', pos = {x = 2, y = 0}, alias = '2'},
 		{name = '3', pos = {x = 3, y = 0}, alias = '3'},
