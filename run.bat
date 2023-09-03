@@ -9,5 +9,8 @@ echo task management catch it and makes it crash
 echo I dont really know how to fix it and its cringy and lame
 echo that i had to put a note about it in here.
 timeout /t 3
-"C:\Program Files\LOVE\love.exe" .\
+start "C:\Program Files\LOVE\love.exe" .\
+cls
+echo All components running if you see this you can close this window
+echo if not closed by its own.
 exit /b
